@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "12620783779",
+    "project_id": "dailymemory-ee67c",
+    "storage_bucket": "dailymemory-ee67c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12620783779:android:1c6513e33957d95bb45f16",
+        "android_client_info": {
+          "package_name": "com.AEAS.dailymemory"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrSW4V3ngDB5Qi-un54YODNldCm_vCX-g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
