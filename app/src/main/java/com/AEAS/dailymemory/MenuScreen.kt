@@ -37,9 +37,9 @@ fun MenuScreen(
     onNavigateToMemoryTypes: () -> Unit,
     onNavigateToStory: () -> Unit,
     onNavigateToRelax: () -> Unit,
+    onNavigateToChat: () -> Unit,
     onLogout: () -> Unit
 ) {
-
     val currentUser = FirebaseProviders.auth.currentUser
     val userDisplayName = currentUser?.displayName ?: "Usuario"
 
@@ -56,7 +56,7 @@ fun MenuScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .shadow(4.dp) // Sombra
+                    .shadow(4.dp)
                     .background(Color(0xFFF8F9FA).copy(alpha = 0.95f))
             ) {
                 Row(
@@ -66,10 +66,10 @@ fun MenuScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Daily Memory", color = mintPrimary, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                    Text("Daily Memory", color = mintPrimary, fontSize = 30.sp, fontWeight = FontWeight.Bold)
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        TextButton(onClick = { /* Ir a Perfil */ }) {
+                        TextButton(onClick = {  }) {
                             Icon(Icons.Default.Person, contentDescription = null, tint = BlueDark)
                             Spacer(modifier = Modifier.width(4.dp))
                             Text("Perfil", color = BlueDark, fontWeight = FontWeight.Bold)
@@ -87,50 +87,55 @@ fun MenuScreen(
                 }
             }
 
-            // --- CONTENIDO PRINCIPAL ---
-            BoxWithConstraints(modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)) {
-                val isTablet = maxWidth > 600.dp
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                    val isTablet = maxWidth > 600.dp
 
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Bienvenido, ",
-                        fontSize = 32.sp,
-                        color = BlueDark
-                    )
-                    Text(
-                        text = userDisplayName,
-                        fontSize = 36.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = BlueDark
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Bienvenido, ",
+                            fontSize = 32.sp,
+                            color = BlueDark
+                        )
+                        Text(
+                            text = userDisplayName,
+                            fontSize = 36.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = BlueDark
+                        )
 
-                    Spacer(modifier = Modifier.height(40.dp))
+                        Spacer(modifier = Modifier.height(40.dp))
 
-                    if (isTablet) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Box(modifier = Modifier.weight(0.6f)) {
-                                MenuGrid(mintPrimary, lightMintBg, onNavigateToRelax, onNavigateToMemoryTypes, onNavigateToStory)
+                        if (isTablet) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Box(modifier = Modifier.weight(0.6f)) {
+                                    MenuGrid(mintPrimary, lightMintBg, onNavigateToRelax, onNavigateToMemoryTypes, onNavigateToStory, onNavigateToChat)
+                                }
+                                Box(modifier = Modifier.weight(0.4f), contentAlignment = Alignment.Center) {
+                                    FloatingMascot(size = 280.dp)
+                                }
                             }
-                            Box(modifier = Modifier.weight(0.4f), contentAlignment = Alignment.Center) {
-                                FloatingMascot(size = 280.dp)
-                            }
+                        } else {
+                            MenuGrid(mintPrimary, lightMintBg, onNavigateToRelax, onNavigateToMemoryTypes, onNavigateToStory, onNavigateToChat)
+                            Spacer(modifier = Modifier.height(32.dp))
+                            FloatingMascot(size = 200.dp)
                         }
-                    } else {
-                        MenuGrid(mintPrimary, lightMintBg, onNavigateToRelax, onNavigateToMemoryTypes, onNavigateToStory)
-                        Spacer(modifier = Modifier.height(32.dp))
-                        FloatingMascot(size = 200.dp)
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(60.dp))
 
             Box(
                 modifier = Modifier
@@ -200,7 +205,8 @@ fun MenuGrid(
     lightMintBg: Color,
     onNavigateToRelax: () -> Unit,
     onNavigateToMemoryTypes: () -> Unit,
-    onNavigateToStory: () -> Unit
+    onNavigateToStory: () -> Unit,
+    onNavigateToChat: () -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
         Row(
@@ -234,7 +240,7 @@ fun MenuGrid(
                 icon = Icons.Default.Chat,
                 mintPrimary = mintPrimary,
                 lightMintBg = lightMintBg,
-                onClick = { /* Ir a Chat */ }
+                onClick = onNavigateToChat
             )
             MenuGameCard(
                 modifier = Modifier.weight(1f),
@@ -260,7 +266,7 @@ fun MenuGameCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(100.dp) // Fuerza altura uniforme para todas las tarjetas
+            .height(100.dp)
             .clickable { onClick() }
             .shadow(12.dp, RoundedCornerShape(24.dp)),
         shape = RoundedCornerShape(24.dp),

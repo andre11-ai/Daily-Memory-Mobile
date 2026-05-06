@@ -48,13 +48,18 @@ fun LoginSignupScreen(
     var termsAccepted by remember { mutableStateOf(false) }
 
     var passwordVisible by remember { mutableStateOf(false) }
-    var passwordConfirmVisible by remember { mutableStateOf(false) } // NUEVO ESTADO
+    var passwordConfirmVisible by remember { mutableStateOf(false) }
     val authState by authViewModel.authState.collectAsState()
 
     LaunchedEffect(authState) {
         if (authState is AuthState.Success) {
             authViewModel.resetState()
-            if (isLogin) onLoginSuccess() else onRegisterSuccess()
+
+            if (isLogin) {
+                onLoginSuccess()
+            } else {
+                isLogin = true
+            }
         }
     }
 
@@ -75,7 +80,7 @@ fun LoginSignupScreen(
                 modifier = Modifier
                     .padding(16.dp)
                     .widthIn(min = 300.dp, max = 380.dp)
-                    .wrapContentHeight() // Se ajusta al contenido
+                    .wrapContentHeight()
                     .shadow(16.dp, RoundedCornerShape(28.dp)),
                 shape = RoundedCornerShape(28.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White)
@@ -83,7 +88,6 @@ fun LoginSignupScreen(
                 Column(
                     modifier = Modifier
                         .padding(24.dp)
-                        // CORRECCIÓN: Mantenemos scroll por si acaso en pantallas muy pequeñas
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -142,12 +146,6 @@ fun LoginSignupScreen(
                         )
                         Spacer(Modifier.height(12.dp))
                     }
-
-                    CustomOutlinedTextField(
-                        value = email, onValueChange = { email = it },
-                        label = "Correo electrónico", icon = Icons.Default.Email
-                    )
-                    Spacer(Modifier.height(12.dp))
 
                     OutlinedTextField(
                         value = pass,
@@ -213,7 +211,7 @@ fun LoginSignupScreen(
                                 }
                             }
                         },
-                        enabled = authState !is AuthState.Loading, // Se desactiva mientras carga
+                        enabled = authState !is AuthState.Loading,
                         modifier = Modifier.fillMaxWidth().height(52.dp),
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = BluePrimary)

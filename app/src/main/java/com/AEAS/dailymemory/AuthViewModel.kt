@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import com.google.firebase.auth.UserProfileChangeRequest
+
 
 sealed class AuthState {
     object Idle : AuthState()
@@ -31,6 +33,12 @@ class AuthViewModel : ViewModel() {
                 val firebaseUser = authResult.user
 
                 if (firebaseUser != null) {
+                    val profileUpdates = UserProfileChangeRequest.Builder()
+                        .setDisplayName(username)
+                        .build()
+
+                    firebaseUser.updateProfile(profileUpdates).await()
+
                     val newUser = User(
                         uid = firebaseUser.uid,
                         name = name,
@@ -38,13 +46,12 @@ class AuthViewModel : ViewModel() {
                         username = username,
                         email = email
                     )
-
                     db.collection("users").document(firebaseUser.uid).set(newUser).await()
 
                     _authState.value = AuthState.Success
                 }
             } catch (e: Exception) {
-                _authState.value = AuthState.Error(e.localizedMessage ?: "Error desconocido al registrar")
+                _authState.value = AuthState.Error(e.localizedMessage ?: "Error al registrar")
             }
         }
     }
