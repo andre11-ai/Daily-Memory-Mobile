@@ -56,36 +56,55 @@ fun DailyMemoryApp() {
                 )
             }
 
-            composable("game_screen/{gameData}") { backStackEntry ->
-                val gameData = backStackEntry.arguments?.getString("gameData") ?: ""
-                val parts = gameData.split("_")
-                val gameName = parts.getOrNull(0) ?: ""
-                val difficulty = parts.getOrNull(1) ?: "Fácil"
-
-                if (gameName == "Color") {
-                    ColorGameScreen(
-                        difficulty = difficulty,
-                        onNavigateBack = { nav.navigateUp() }
-                    )
-                } else {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("Juego $gameName en desarrollo...")
-                    }
-                }
-            }
-
             composable("memoria_muscular") {
                 MuscularScreen(
                     onNavigateBack = { nav.navigateUp() },
-                    onNavigateToGame = { gameAndDifficulty -> println("Iniciar juego: $gameAndDifficulty") }
+                    onNavigateToGame = { gameAndDifficulty ->
+                        nav.navigate("game_screen/$gameAndDifficulty")
+                    }
                 )
             }
 
             composable("memoria_ecoica") {
                 EcoicaScreen(
                     onNavigateBack = { nav.navigateUp() },
-                    onNavigateToGame = { gameAndDifficulty -> println("Iniciar juego: $gameAndDifficulty") }
+                    onNavigateToGame = { gameAndDifficulty ->
+                        nav.navigate("game_screen/$gameAndDifficulty")
+                    }
                 )
+            }
+
+            composable("game_screen/{gameData}") { backStackEntry ->
+                val gameData = backStackEntry.arguments?.getString("gameData") ?: ""
+                val parts = gameData.split("_")
+                val gameName = parts.getOrNull(0) ?: ""
+                val difficulty = parts.getOrNull(1) ?: "Fácil"
+
+                when (gameName) {
+                    "Color" -> {
+                        ColorGameScreen(difficulty = difficulty, onNavigateBack = { nav.navigateUp() })
+                    }
+                    "Secuencia" -> {
+                        SequenceGameScreen(difficulty = difficulty, onNavigateBack = { nav.navigateUp() })
+                    }
+                    "Memorama" -> {
+                        MemoramaScreen(difficulty = difficulty, onNavigateBack = { nav.navigateUp() })
+                    }
+                    "Simon" -> {
+                        SimonGameScreen(difficulty = difficulty, onNavigateBack = { nav.navigateUp() })
+                    }
+                    "Palabra" -> {
+                        WordRepeatScreen(difficulty = difficulty, onNavigateBack = { nav.navigateUp() })
+                    }
+                    "Sonido" -> {
+                        AudioPairsScreen(difficulty = difficulty, onNavigateBack = { nav.navigateUp() })
+                    }
+                    else -> {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text("Juego $gameName en desarrollo...")
+                        }
+                    }
+                }
             }
         }
     }
