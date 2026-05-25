@@ -29,14 +29,25 @@ fun DailyMemoryApp() {
             composable("home") {
                 MenuScreen(
                     onNavigateToMemoryTypes = { nav.navigate("tipos_memoria") },
-                    onNavigateToStory = { },
-                    onNavigateToRelax = { },
+                    onNavigateToStory = { nav.navigate("story") },                    onNavigateToRelax = { },
                     onNavigateToChat = { nav.navigate("chat") },
                     onLogout = { nav.navigate("index") { popUpTo(0) } }
                 )
             }
 
+            composable("story") {
+                StoryScreen(
+                    onNavigateBack = { nav.navigateUp() },
+                    onLevelClick = { levelSeleccionado ->
+                        // Aquí navegas a la pantalla del juego específico o nivel
+                        nav.navigate("game_screen/Simon_$levelSeleccionado")
+                    }
+                )
+            }
+
             composable("chat") { ChatScreen(onNavigateBack = { nav.navigateUp() }) }
+
+
 
             composable("tipos_memoria") {
                 TiposMemoriaScreen(
@@ -98,6 +109,15 @@ fun DailyMemoryApp() {
                     }
                     "Sonido" -> {
                         AudioPairsScreen(difficulty = difficulty, onNavigateBack = { nav.navigateUp() })
+                    }
+                    "Velocimetro" -> { // <--- AÑADIMOS EL VELOCÍMETRO AQUÍ (Sin acento porque así lo manda tu menú)
+                        TypingSpeedScreen(difficulty = difficulty, onNavigateBack = { nav.navigateUp() })
+                    }
+                    "Lluvia" -> { // <--- AÑADIMOS EL NUEVO JUEGO AQUÍ
+                        FallingTilesScreen(difficulty = difficulty, onNavigateBack = { nav.navigateUp() })
+                    }
+                    "Scary" -> { // <--- EL JUEGO FINAL AÑADIDO AQUÍ
+                        DefendBaseScreen(difficulty = difficulty, onNavigateBack = { nav.navigateUp() })
                     }
                     else -> {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
